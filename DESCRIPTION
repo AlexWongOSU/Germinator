@@ -1,0 +1,23 @@
+Package: Germinator
+Type: Package
+Title: Experimental design and data analysis from ImageJ plugin 
+     "HyphaTracker" output
+Version: 0.1.0
+Depends: R (>= 3.6.0),
+    dplyr,
+    graphics,
+    stats,
+    utils,
+    tidyr
+Author: Alexander Wong
+Maintainer: Alexander Wong <wonga4@oregonstate.edu>
+Description: Create experiental design for 
+    plate well treatment assignment. Sorts, filters, from the ImageJ
+    plugin "HyphaTracker" data output. 
+License: GPL (>=3)
+Encoding: UTF-8
+LazyData: true
+Imports: 
+Suggests:
+RoxygenNote: 7.0.2
+URL: https://github.com/AlexWongOSU/Germinator.git
