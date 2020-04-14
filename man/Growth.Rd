@@ -5,12 +5,14 @@
 \title{Process and summarise data from "HyphaTracker" using the design from
 Plate.Design}
 \usage{
-Growth(data, Lookup)
+Growth(data, Lookup, badimage)
 }
 \arguments{
 \item{data}{Dataframe from "HyphaTracker" output.}
 
 \item{Lookup}{Dataframe lookup table from the Plate.Design output}
+
+\item{badimage}{numeric vector of image slices to remove from analysis}
 }
 \value{
 An object of class 'Germinator'
