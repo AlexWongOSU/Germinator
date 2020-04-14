@@ -3,6 +3,7 @@
 #'
 #' @import dplyr
 #' @importFrom  stats sd
+#' @importFrom stats na.omit
 #'
 #' @param data Dataframe from "HyphaTracker" output.
 #' @param Lookup Dataframe lookup table from the Plate.Design output
