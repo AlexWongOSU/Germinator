@@ -28,6 +28,7 @@ Growth<- function(data, Lookup, badimage){
     mutate(pctdiff = ((meanArea-dplyr::lag(meanArea))*100) / dplyr::lag(meanArea))%>%
     mutate(growth = ifelse(difference<0, 0.001, difference))%>%
     dplyr::filter(TimePt == 1)%>%
+    na.omit()%>%
     group_by(Isolate, Fungicide, Conc)%>%
     mutate(n = length(growth))%>%
     mutate(seGrowth = sd(growth)/sqrt(n))
