@@ -48,11 +48,13 @@ Lookuptable.maker<- function(Treatments = c("Control 0", "Acetone 0", "SHAM 100"
     Blk3<- sep.trt[RNG3, ]
     Blk4<- sep.trt[RNG4, ]
     Treatment_list<- rbind(Blk1,Blk2,Blk3,Blk4)
+    Treatment_list$Fungicide<- Treatment_list$Fungicide[order(match(Treatment_list$Fungicide, sep.trt$Fungicide))]
+    Treatment_list$Concentration<- as.numeric(rep(sep.trt$Concentration, each = Reps))
   } else {
     replicated<- do.call("rbind", replicate(Reps, sep.trt, simplify = FALSE))
     Treatment_list<- replicated
     Treatment_list$Fungicide<- Treatment_list$Fungicide[order(match(Treatment_list$Fungicide, sep.trt$Fungicide))]
-    Treatment_list$Concentration<- rep(sep.trt$Concentration, each = Reps)
+    Treatment_list$Concentration<- as.numeric(rep(sep.trt$Concentration, each = Reps))
   }
 
   Treatment<- paste(Treatment_list$Fungicide,Treatment_list$Concentration)

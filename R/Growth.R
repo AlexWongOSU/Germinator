@@ -6,13 +6,14 @@
 #'
 #' @param data Dataframe from "HyphaTracker" output.
 #' @param Lookup Dataframe lookup table from the Plate.Design output
+#' @param badimage numeric vector of image slices to remove from analysis
 #'
 #' @return An object of class 'Germinator'
 #' @export
 #'
 
 
-Growth<- function(data, Lookup){
+Growth<- function(data, Lookup, badimage){
   data$Fungicide<- Lookup[match(data$Slice, Lookup$Slice), c('Fungicide')]
   data$Conc<- Lookup[match(data$Slice, Lookup$Slice), c('Conc')]
   data$Block<- Lookup[match(data$Slice, Lookup$Slice), c('Block')]
@@ -20,6 +21,7 @@ Growth<- function(data, Lookup){
   data$Isolate<- Lookup[match(data$Slice, Lookup$Slice), c('Isolate')]
 
   summarized.data<- data%>%
+    dplyr::filter(Slice != badimage)%>%
     group_by(Isolate, Fungicide, Conc, Block, TimePt)%>%
     summarise(meanArea = mean(Area))%>%
     mutate(difference = meanArea - dplyr::lag(meanArea))%>%
