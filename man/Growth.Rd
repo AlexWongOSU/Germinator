@@ -5,7 +5,13 @@
 \title{Process and summarise data from "HyphaTracker" using the design from
 Plate.Design}
 \usage{
-Growth(data, Lookup, badimage)
+Growth(
+  data = NULL,
+  Lookup = NULL,
+  badimage = NULL,
+  size = c(100, 200, 100, 600),
+  circ = c(0.5, 0.99, 0.15, 0.99)
+)
 }
 \arguments{
 \item{data}{Dataframe from "HyphaTracker" output.}
@@ -13,6 +19,12 @@ Growth(data, Lookup, badimage)
 \item{Lookup}{Dataframe lookup table from the Plate.Design output}
 
 \item{badimage}{numeric vector of image slices to remove from analysis}
+
+\item{size}{numeric vector. Min and max pixel area of spores
+for first and second timepoint.}
+
+\item{circ}{numeric vector. Min and max circularity of spores
+for first and second timepoint.}
 }
 \value{
 An object of class 'Germinator'

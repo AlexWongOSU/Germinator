@@ -5,11 +5,8 @@
 \title{Creating lookup table from vectors of fungicides and concentrations}
 \usage{
 Lookuptable.maker(
-  Treatments = c("Control 0", "Acetone 0", "SHAM 100", "QoI 10", "DMI1 0.1",
-    "DMI1 1.0", "DMI1 10", "DMI1 100", "DMI2 0.1", "DMI2 1.0", "DMI2 10", "DMI2 100",
-    "MTF 0.1", "MTF 1.0", "MTF 10", "MTF 100", "QXF 0.00001", "QXF 0.0001", "QXF 0.001",
-    "QXF 0.01", "SDHI 0.1", "SDHI 1.0", "SDHI 10", "SDHI 100"),
-  Isolates = c("A", "B", "C", "D"),
+  Treatments = NULL,
+  Isolates = NULL,
   Wells = 96,
   Reps = 4,
   timepts = 2,
