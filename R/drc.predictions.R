@@ -2,41 +2,46 @@
 #'   that can be used for plotting dose response curves in ggplot2.
 #'
 #'
-#'@param data dataframe used for the model
-#'@param model model object from drm
-#'@param conc numeric string. Concentrations or doses used in acsending order.
-#'@param LOG Logical. True if concentration scale is logistic. Default is TRUE.
-#'@param sm.value Numeric. Small value to add to concentrations of zero to
-#'  avoid log of 0. Defualt is 0.00005.
-#'@param smoothness resolution of confidence intervals. 100 is default
+#'@param data dataframe
+#'@param dose Dose variable name
+#'@param pesticide character vector of pesticides tested
+#'@param iso character vector of isolates tested
+#'@param doserange numeric vector of min and max dose
+#'@param responsevar variable name of response variable
+#'@param fct specific non linear function. Default in LL.3
+#'@param ... Additional arguments to pass into drm
+#'@param levels Variables to break up data. From largest to smallest
+#'@param smoothness Smoothness of prediction line. Default is 100.
 #'
 #'@importFrom stats predict
+#'@import purrr
+#'@import drc
 #'
 #'@export
 
 
-drc.predictions<- function(data,
-                           model,
-                           conc,
-                           LOG=TRUE,
-                           sm.value = 0.00005,
-                           smoothness = 100){
-  if (LOG == TRUE) {
-    newdata <- expand.grid(conc=exp(seq(log(conc[1]+sm.value),
-                                        log(conc[length(conc)]),
-                                        length = smoothness)))
-  }
-  else {
-    newdata <- expand.grid(conc=seq(conc[1],
-                                    conc[length(conc)]),
-                           length = smoothness)
-  }
-  prediction.model<- predict(model,
-                             newdata = newdata,
-                             interval = "confidence")
-  newdata$pred <- prediction.model[,1]
-  newdata$pmin <- prediction.model[,2]
-  newdata$pmax <- prediction.model[,3]
+drc.predictions<- function(data = NULL, dose, pesticide, iso, doserange, responsevar, fct = LL.3(), ..., levels = NULL, smoothness = 100){
+  conc.predictions<- expand.grid(Conc = seq(from = doserange[1],
+                                       to = doserange[2],
+                                       length = smoothness))
 
-  return(newdata)
+   split.data<- data%>%
+    split(.$levels[1])
+
+  nest.data<- split.data%>%
+    purrr::map(dplyr::group_by, levels[2])%>%
+    purrr::map(tidyr::nest)
+
+  drmfx<- function(df)
+    drm(responsevar~dose, data = df, fct= fct, ...)
+
+  model.data<- nest.data%>%
+    purrr::map(dplyr::mutate, model = purrr::map(data ,drmfx))
+
+  predictionfx<- function(model, pred)
+    stats::predict(object = model, newdata = pred, interval = "confidence")
+
+  pred.data<- model.data%>%
+    purrr::map(dplyr::mutate, predictions = purrr::map(model, predictionfx, pred = conc.predictions))%>%
+    purrr::map(dplyr::mutate, plotting.pred = purrr::map(pred, dplyr::mutate, conc.predictions))
 }
