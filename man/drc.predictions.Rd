@@ -6,38 +6,26 @@
   that can be used for plotting dose response curves in ggplot2.}
 \usage{
 drc.predictions(
-  data = NULL,
-  dose,
-  pesticide,
-  iso,
-  doserange,
-  responsevar,
-  fct = LL.3(),
-  ...,
-  levels = NULL,
-  smoothness = 100
+  data,
+  splitfct,
+  nest.fct,
+  concrange = c(0, 100),
+  smoothness = 100,
+  ...
 )
 }
 \arguments{
 \item{data}{dataframe}
 
-\item{dose}{Dose variable name}
+\item{splitfct}{variable to split data by. as chaaracter}
 
-\item{pesticide}{character vector of pesticides tested}
+\item{nest.fct}{variable to nest data by}
 
-\item{iso}{character vector of isolates tested}
-
-\item{doserange}{numeric vector of min and max dose}
-
-\item{responsevar}{variable name of response variable}
-
-\item{fct}{specific non linear function. Default in LL.3}
-
-\item{...}{Additional arguments to pass into drm}
-
-\item{levels}{Variables to break up data. From largest to smallest}
+\item{concrange}{numeric vector of min and max dose}
 
 \item{smoothness}{Smoothness of prediction line. Default is 100.}
+
+\item{...}{arguments to pass into drm}
 }
 \description{
 Creates a predicitons table to create 95% confidence intervals
