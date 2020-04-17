@@ -9,8 +9,8 @@ Growth(
   data = NULL,
   Lookup = NULL,
   badimage = NULL,
-  size = c(100, 200, 100, 600),
-  circ = c(0.5, 0.99, 0.15, 0.99)
+  size = c(100, 300, 100, 600),
+  circ = c(0.5, 0.99, 0.1, 0.99)
 )
 }
 \arguments{

@@ -6,27 +6,38 @@
   that can be used for plotting dose response curves in ggplot2.}
 \usage{
 drc.predictions(
-  data,
-  model,
-  conc,
-  LOG = TRUE,
-  sm.value = 5e-05,
+  data = NULL,
+  dose,
+  pesticide,
+  iso,
+  doserange,
+  responsevar,
+  fct = LL.3(),
+  ...,
+  levels = NULL,
   smoothness = 100
 )
 }
 \arguments{
-\item{data}{dataframe used for the model}
+\item{data}{dataframe}
 
-\item{model}{model object from drm}
+\item{dose}{Dose variable name}
 
-\item{conc}{numeric string. Concentrations or doses used in acsending order.}
+\item{pesticide}{character vector of pesticides tested}
 
-\item{LOG}{Logical. True if concentration scale is logistic. Default is TRUE.}
+\item{iso}{character vector of isolates tested}
 
-\item{sm.value}{Numeric. Small value to add to concentrations of zero to
-avoid log of 0. Defualt is 0.00005.}
+\item{doserange}{numeric vector of min and max dose}
 
-\item{smoothness}{resolution of confidence intervals. 100 is default}
+\item{responsevar}{variable name of response variable}
+
+\item{fct}{specific non linear function. Default in LL.3}
+
+\item{...}{Additional arguments to pass into drm}
+
+\item{levels}{Variables to break up data. From largest to smallest}
+
+\item{smoothness}{Smoothness of prediction line. Default is 100.}
 }
 \description{
 Creates a predicitons table to create 95% confidence intervals
