@@ -17,7 +17,6 @@
 
 
 drc.predictions<- function(data, splitfct, nest.fct, concrange = c(0,100), smoothness = 100, ...){
-  #Need to use quoting to get the function to work
   split.data<- split(data, data[splitfct])
 
   nest.fct<- enquo(nest.fct)
