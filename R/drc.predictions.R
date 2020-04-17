@@ -3,15 +3,11 @@
 #'
 #'
 #'@param data dataframe
-#'@param dose Dose variable name
-#'@param pesticide character vector of pesticides tested
-#'@param iso character vector of isolates tested
-#'@param doserange numeric vector of min and max dose
-#'@param responsevar variable name of response variable
-#'@param fct specific non linear function. Default in LL.3
-#'@param ... Additional arguments to pass into drm
-#'@param levels Variables to break up data. From largest to smallest
+#'@param splitfct variable to split data by. as chaaracter
+#'@param nest.fct variable to nest data by
+#'@param concrange numeric vector of min and max dose
 #'@param smoothness Smoothness of prediction line. Default is 100.
+#'@param ... arguments to pass into drm
 #'
 #'@importFrom stats predict
 #'@import purrr
@@ -20,28 +16,29 @@
 #'@export
 
 
-drc.predictions<- function(data = NULL, dose, pesticide, iso, doserange, responsevar, fct = LL.3(), ..., levels = NULL, smoothness = 100){
-  conc.predictions<- expand.grid(Conc = seq(from = doserange[1],
-                                       to = doserange[2],
-                                       length = smoothness))
+drc.predictions<- function(data, splitfct, nest.fct, concrange = c(0,100), smoothness = 100, ...){
+  #Need to use quoting to get the function to work
+  split.data<- split(data, data[splitfct])
 
-   split.data<- data%>%
-    split(.$levels[1])
-
+  nest.fct<- enquo(nest.fct)
   nest.data<- split.data%>%
-    purrr::map(dplyr::group_by, levels[2])%>%
-    purrr::map(tidyr::nest)
+    map(group_by, !!nest.fct)%>%
+    map(nest)
 
-  drmfx<- function(df)
-    drm(responsevar~dose, data = df, fct= fct, ...)
+  drmfx<- function(df, ...){
+    drm(data = df, ...)
+  }
 
   model.data<- nest.data%>%
-    purrr::map(dplyr::mutate, model = purrr::map(data ,drmfx))
+    purrr::map(dplyr::mutate, model = purrr::map(data, drmfx, ...))
 
-  predictionfx<- function(model, pred)
-    stats::predict(object = model, newdata = pred, interval = "confidence")
+  predconc<- expand.grid(seq(from = concrange[1], to= concrange[2], length = smoothness))
+  predfx<- function(mod){
+    predict(object = mod, newdata = predconc, interval = "confidence")
+  }
 
   pred.data<- model.data%>%
-    purrr::map(dplyr::mutate, predictions = purrr::map(model, predictionfx, pred = conc.predictions))%>%
-    purrr::map(dplyr::mutate, plotting.pred = purrr::map(pred, dplyr::mutate, conc.predictions))
+    map(mutate, predictions = map(model, predfx))
+
+  return(pred.data)
 }
