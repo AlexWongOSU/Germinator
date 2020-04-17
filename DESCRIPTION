@@ -8,7 +8,9 @@ Depends: R (>= 3.6.0),
     graphics,
     stats,
     utils,
-    tidyr
+    tidyr,
+    purrr,
+    drc
 Author: Alexander Wong
 Maintainer: Alexander Wong <wonga4@oregonstate.edu>
 Description: Create experiental design for 
