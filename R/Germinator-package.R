@@ -1,6 +1,6 @@
-#'Germinator: a package for processing "HyphaTracker" data output.
+#'Germinator: a package for processing `HyphaTracker`` data output.
 #'
-#'"HyphaTracker" is an ImageJ macro plugin developed by \cite{Brunk et al 2018}.
+#'`HyphaTracker` is an ImageJ macro plugin developed by \cite{Brunk et al 2018}.
 #'
 #'
 #'The Germinator package provides four important functions: Design of experiment

@@ -8,9 +8,10 @@ Plate.Design}
 Growth(
   data = NULL,
   Lookup = NULL,
-  badimage = NULL,
+  badimage = FALSE,
   size = c(100, 300, 100, 600),
-  circ = c(0.5, 0.99, 0.1, 0.99)
+  circ = c(0.5, 0.99, 0.1, 0.99),
+  img = c()
 )
 }
 \arguments{
@@ -18,13 +19,15 @@ Growth(
 
 \item{Lookup}{Dataframe lookup table from the Plate.Design output}
 
-\item{badimage}{numeric vector of image slices to remove from analysis}
+\item{badimage}{logical, if their are images to be reomved from analysis}
 
 \item{size}{numeric vector. Min and max pixel area of spores
 for first and second timepoint.}
 
 \item{circ}{numeric vector. Min and max circularity of spores
 for first and second timepoint.}
+
+\item{img}{numeric vector. images to be removed from analysis}
 }
 \value{
 An object of class 'Germinator'

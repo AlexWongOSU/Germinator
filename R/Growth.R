@@ -6,12 +6,9 @@
 #' @importFrom stats na.omit
 #'
 #' @param data Dataframe from "HyphaTracker" output.
-#' @param Lookup Dataframe lookup table from the Plate.Design output
-#' @param badimage numeric vector of image slices to remove from analysis
-#' @param size numeric vector. Min and max pixel area of spores
-#' for first and second timepoint.
-#' @param circ numeric vector. Min and max circularity of spores
-#' for first and second timepoint.
+#' @param Lookup Dataframe lookup table from the `Plate.Design` output
+#' @param badimage logical, if their are images to be reomved from analysis
+#' @param img numeric vector. images to be removed from analysis based on Slice
 #'
 #' @return An object of class 'Germinator'
 #' @export
@@ -21,7 +18,7 @@
 Growth<- function(data = NULL,
                   Lookup = NULL,
                   badimage = NULL,
-                  size = c(100, 300, 100, 600),
+                  size = c(100, 300, 100, 700),
                   circ = c(0.5, 0.99, 0.10, 0.99)){
   data$Fungicide<- Lookup[match(data$Slice, Lookup$Slice), c('Fungicide')]
   data$Conc<- Lookup[match(data$Slice, Lookup$Slice), c('Conc')]
@@ -58,9 +55,12 @@ Growth<- function(data = NULL,
     na.omit()%>%
     group_by(Isolate, Fungicide, Conc)%>%
     mutate(n = length(growth))%>%
-    mutate(seGrowth = sd(growth)/sqrt(n))
+    mutate(seGrowth = sd(growth)/sqrt(n))%>%
+    mutate(meangrowth = mean(growth))%>%
+    group_by(Isolate)%>%
+    mutate(rel.growth = growth/meangrowth[Conc == 0])
 
-summarized.data<- as.data.frame(summarized.data)
+  summarized.data<- as.data.frame(summarized.data)
   output<- list("new.data.df" = new.df, "GrowthData" = summarized.data)
   return(output)
 }
