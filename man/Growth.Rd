@@ -2,37 +2,22 @@
 % Please edit documentation in R/Growth.R
 \name{Growth}
 \alias{Growth}
-\title{Process and summarise data from "HyphaTracker" using the design from
+\title{Process and summarize data from "HyphaTracker" using the design from
 Plate.Design}
 \usage{
-Growth(
-  data = NULL,
-  Lookup = NULL,
-  badimage = FALSE,
-  size = c(100, 300, 100, 600),
-  circ = c(0.5, 0.99, 0.1, 0.99),
-  img = c()
-)
+Growth(data = NULL, Lookup = NULL, badimage = c(""))
 }
 \arguments{
 \item{data}{Dataframe from "HyphaTracker" output.}
 
-\item{Lookup}{Dataframe lookup table from the Plate.Design output}
+\item{Lookup}{Dataframe lookup table from the `Plate.Design` output}
 
-\item{badimage}{logical, if their are images to be reomved from analysis}
-
-\item{size}{numeric vector. Min and max pixel area of spores
-for first and second timepoint.}
-
-\item{circ}{numeric vector. Min and max circularity of spores
-for first and second timepoint.}
-
-\item{img}{numeric vector. images to be removed from analysis}
+\item{badimage}{logical, if their are images to be removed from analysis}
 }
 \value{
 An object of class 'Germinator'
 }
 \description{
-Process and summarise data from "HyphaTracker" using the design from
+Process and summarize data from "HyphaTracker" using the design from
 Plate.Design
 }

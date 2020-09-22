@@ -46,8 +46,7 @@ Lookuptable.maker<- function(Treatments = NULL,
     Treatment_list$Fungicide<- Treatment_list$Fungicide[order(match(Treatment_list$Fungicide, sep.trt$Fungicide))]
     Treatment_list$Concentration<- as.numeric(rep(sep.trt$Concentration, each = Reps))
   } else {
-    replicated<- do.call("rbind", replicate(Reps, sep.trt, simplify = FALSE))
-    Treatment_list<- replicated
+    Treatment_list<- do.call("rbind", replicate(Reps, sep.trt, simplify = FALSE))
     Treatment_list$Fungicide<- Treatment_list$Fungicide[order(match(Treatment_list$Fungicide, sep.trt$Fungicide))]
     Treatment_list$Concentration<- as.numeric(rep(sep.trt$Concentration, each = Reps))
   }
@@ -59,14 +58,20 @@ Lookuptable.maker<- function(Treatments = NULL,
 
   if(snake == TRUE){
     Treatment_list$Well<- rep(c(1:8,16:9,17:24,32:25,33:40,48:41,49:56,64:57,65:72,80:73,81:88,96:89))
+    Treatment_list$Column<- rep(1:12, each = 8)
+    Treatment_list$Row<- rep(LETTERS[1:8], times = 12)
+    Treatment_list$Block<- rep(1:Reps, times = (Wells/Reps))
     Treatment_list<- Treatment_list[order(Treatment_list$Well),]
+
     LookupTable<- data.frame(Slice = c(1:(Wells*length(Isolates)*timepts)),
                              Well = rep(1:Wells, times = length(Isolates)*timepts),
                              Isolate = rep(Isolates, each = Wells, times = timepts),
+                             Row = rep(Treatment_list$Row, times = length(Isolates)*timepts),
+                             Column = rep(Treatment_list$Column, times = length(Isolates)*timepts),
                              Timepoint = rep(0:(timepts-1), each = Wells*length(Isolates)),
                              Fungicide = rep(Treatment_list$Fungicide, times= length(Isolates)*timepts),
                              Conc = rep(Treatment_list$Concentration, times = length(Isolates)*timepts),
-                             Block = rep(1:Reps, times= timepts*(Wells/Reps)*length(Isolates)))
+                             Block = rep(Treatment_list$Block, times= timepts*length(Isolates)))
   } else {
     LookupTable<- data.frame(Slice = c(1:(Wells*length(Isolates)*timepts)),
                              Well = rep(1:Wells, times = length(Isolates)*timepts),

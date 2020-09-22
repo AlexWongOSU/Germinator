@@ -1,4 +1,4 @@
-#' Process and summarise data from "HyphaTracker" using the design from
+#' Process and summarize data from "HyphaTracker" using the design from
 #' Plate.Design
 #'
 #' @import dplyr
@@ -7,8 +7,7 @@
 #'
 #' @param data Dataframe from "HyphaTracker" output.
 #' @param Lookup Dataframe lookup table from the `Plate.Design` output
-#' @param badimage logical, if their are images to be reomved from analysis
-#' @param img numeric vector. images to be removed from analysis based on Slice
+#' @param badimage logical, if their are images to be removed from analysis
 #'
 #' @return An object of class 'Germinator'
 #' @export
@@ -17,33 +16,20 @@
 
 Growth<- function(data = NULL,
                   Lookup = NULL,
-                  badimage = NULL,
-                  size = c(100, 300, 100, 700),
-                  circ = c(0.5, 0.99, 0.10, 0.99)){
+                  badimage = c("")){
   data$Fungicide<- Lookup[match(data$Slice, Lookup$Slice), c('Fungicide')]
   data$Conc<- Lookup[match(data$Slice, Lookup$Slice), c('Conc')]
   data$Block<- Lookup[match(data$Slice, Lookup$Slice), c('Block')]
   data$TimePt<- Lookup[match(data$Slice, Lookup$Slice), c('Timepoint')]
   data$Isolate<- Lookup[match(data$Slice, Lookup$Slice), c('Isolate')]
+  data$Well<- Lookup[match(data$Slice, Lookup$Slice), c('Well')]
+  data$Row<- Lookup[match(data$Slice, Lookup$Slice), c("Row")]
+  data$Column<- Lookup[match(data$Slice, Lookup$Slice), c("Column")]
 
   new.df<- data
 
-  filtered.data.list<- new.df%>%
-    dplyr::filter(Slice != badimage)%>%
-    split(.$TimePt)
-  filtered.dataT0<- filtered.data.list[[1]]%>%
-    dplyr::filter(Area>size[1])%>%
-    dplyr::filter(Area<size[2])%>%
-    dplyr::filter(Circ.>circ[1])%>%
-    dplyr::filter(Circ.<circ[2])
-
-  filtered.dataT1<- filtered.data.list[[2]]%>%
-    dplyr::filter(Area>size[3])%>%
-    dplyr::filter(Area<size[4])%>%
-    dplyr::filter(Circ.>circ[3])%>%
-    dplyr::filter(Circ.<circ[4])
-
-  filtered.data<- rbind(filtered.dataT0, filtered.dataT1)
+  filtered.data<- new.df%>%
+    dplyr::filter(Slice != badimage)
 
   summarized.data<- filtered.data%>%
     group_by(Isolate, Fungicide, Conc, Block, TimePt)%>%
@@ -58,7 +44,9 @@ Growth<- function(data = NULL,
     mutate(seGrowth = sd(growth)/sqrt(n))%>%
     mutate(meangrowth = mean(growth))%>%
     group_by(Isolate)%>%
-    mutate(rel.growth = growth/meangrowth[Conc == 0])
+    mutate(rel.growth = growth/meangrowth[Conc == 0])%>%
+    group_by(Isolate, Fungicide, Conc)%>%
+    mutate(rel.growth.se = sd(rel.growth)/sqrt(n))
 
   summarized.data<- as.data.frame(summarized.data)
   output<- list("new.data.df" = new.df, "GrowthData" = summarized.data)

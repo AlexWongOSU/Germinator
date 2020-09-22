@@ -3,9 +3,9 @@
 \docType{package}
 \name{Germinator}
 \alias{Germinator}
-\title{Germinator: a package for processing "HyphaTracker" data output.}
+\title{Germinator: a package for processing `HyphaTracker` data output.}
 \description{
-"HyphaTracker" is an ImageJ macro plugin developed by \cite{Brunk et al 2018}.
+`HyphaTracker` is an ImageJ macro plugin developed by \cite{Brunk et al 2018}.
 }
 \details{
 The Germinator package provides four important functions: Design of experiment

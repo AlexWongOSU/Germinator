@@ -1,43 +1,34 @@
-#' Creates a predicitons table to create 95% confidence intervals
+#' Creates a predictions table to create 95% confidence intervals
 #'   that can be used for plotting dose response curves in ggplot2.
 #'
 #'
-#'@param data dataframe
-#'@param splitfct variable to split data by. as chaaracter
-#'@param nest.fct variable to nest data by
-#'@param concrange numeric vector of min and max dose
-#'@param smoothness Smoothness of prediction line. Default is 100.
-#'@param ... arguments to pass into drm
-#'
-#'@importFrom stats predict
-#'@import purrr
-#'@import drc
+#'@param model object. drm model
+#'@param doses numerical sequence vector of the range of doses tested
+#'@param curvevar character string of the variable curves are predicted for.
 #'
 #'@export
 
 
-drc.predictions<- function(data, splitfct, nest.fct, concrange = c(0,100), smoothness = 100, ...){
-  split.data<- split(data, data[splitfct])
-
-  nest.fct<- enquo(nest.fct)
-  nest.data<- split.data%>%
-    map(group_by, !!nest.fct)%>%
-    map(nest)
-
-  drmfx<- function(df, ...){
-    drm(data = df, ...)
+drm.prediction.fx<- function(model, doses, curvevar){
+  curves<- length(curvevar)
+  df<- data.frame(values = doses)
+  for (x in 1:(curves*3)) {
+    df[,x+1]<- NA
+  }
+  n.value <- dim(df)[1]
+  n.column<- dim(df)[2]
+  for(i in 1:n.value){
+    i.current<- df[i,"values"]
+    i.pred<- predict(model, data.frame(dose = i.current, Isolate = curvevar), interval = "confidence")
+    i.pred.vec<- as.vector(i.pred)
+    for (j in 1:n.column) {
+      df[i,j+1]<- i.pred.vec[j]
+    }
   }
 
-  model.data<- nest.data%>%
-    purrr::map(dplyr::mutate, model = purrr::map(data, drmfx, ...))
-
-  predconc<- expand.grid(seq(from = concrange[1], to= concrange[2], length = smoothness))
-  predfx<- function(mod){
-    predict(object = mod, newdata = predconc, interval = "confidence")
-  }
-
-  pred.data<- model.data%>%
-    map(mutate, predictions = map(model, predfx))
-
-  return(pred.data)
+  df<- df[c(1:n.column)]
+  df.names<- expand.grid(curvevar, c("prediction", "pred.min", "pred.max"))
+  df.names$name<- paste(df.names$Var1, df.names$Var2, sep = ".")
+  names(df)<- c("Dose", df.names$name)
+  return(df)
 }

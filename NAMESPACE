@@ -2,12 +2,9 @@
 
 export(Growth)
 export(Lookuptable.maker)
-export(drc.predictions)
+export(drm.prediction.fx)
 import(dplyr)
-import(drc)
-import(purrr)
 import(utils)
 importFrom(stats,na.omit)
-importFrom(stats,predict)
 importFrom(stats,sd)
 importFrom(tidyr,separate)
