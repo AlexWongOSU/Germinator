@@ -4,12 +4,13 @@
 #'
 #'@param model object. drm model
 #'@param doses numerical sequence vector of the range of doses tested
+#'@param curvename  character. Name of the variable used to draw different curves
 #'@param curvevar character string of the variable curves are predicted for.
 #'
 #'@export
 
 
-drm.prediction.fx<- function(model, doses, curvevar){
+drm.prediction.fx<- function(model, doses, curvename, curvevar){
   curves<- length(curvevar)
   df<- data.frame(values = doses)
   for (x in 1:(curves*3)) {
@@ -19,7 +20,12 @@ drm.prediction.fx<- function(model, doses, curvevar){
   n.column<- dim(df)[2]
   for(i in 1:n.value){
     i.current<- df[i,"values"]
-    i.pred<- predict(model, data.frame(dose = i.current, Isolate = curvevar), interval = "confidence")
+    newdataframe<- data.frame(dose = i.current,
+                              name = curvevar)
+    names(newdataframe)<- c("dose", curvename)
+    i.pred<- predict(model,
+                     newdata = newdataframe,
+                     interval = "confidence")
     i.pred.vec<- as.vector(i.pred)
     for (j in 1:n.column) {
       df[i,j+1]<- i.pred.vec[j]
