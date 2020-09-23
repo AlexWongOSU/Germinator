@@ -17,16 +17,8 @@
 Growth<- function(data = NULL,
                   Lookup = NULL,
                   badimage = c("")){
-  data$Fungicide<- Lookup[match(data$Slice, Lookup$Slice), c('Fungicide')]
-  data$Conc<- Lookup[match(data$Slice, Lookup$Slice), c('Conc')]
-  data$Block<- Lookup[match(data$Slice, Lookup$Slice), c('Block')]
-  data$TimePt<- Lookup[match(data$Slice, Lookup$Slice), c('Timepoint')]
-  data$Isolate<- Lookup[match(data$Slice, Lookup$Slice), c('Isolate')]
-  data$Well<- Lookup[match(data$Slice, Lookup$Slice), c('Well')]
-  data$Row<- Lookup[match(data$Slice, Lookup$Slice), c("Row")]
-  data$Column<- Lookup[match(data$Slice, Lookup$Slice), c("Column")]
 
-  new.df<- data
+  new.df<- merge(data, Lookup, by = "Slice")
 
   filtered.data<- new.df%>%
     dplyr::filter(Slice != badimage)
