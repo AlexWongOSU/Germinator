@@ -3,7 +3,7 @@
 #' @import utils
 #' @importFrom tidyr separate
 #'
-#' @param Treatments A vector of treatments. Pesiticide name and concentration
+#' @param Treatments A vector of treatments. Pesticide name and concentration
 #'   seperated by a single space.
 #' @param Isolates A vector of isolates names.
 #'   In order in which they are imaged

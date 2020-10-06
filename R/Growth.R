@@ -5,7 +5,7 @@
 #' @importFrom  stats sd
 #' @importFrom stats na.omit
 #'
-#' @param data Dataframe from "HyphaTracker" output.
+#' @param data Data frame from "HyphaTracker" output.
 #' @param Lookup Dataframe lookup table from the `Plate.Design` output
 #' @param badimage logical, if their are images to be removed from analysis
 #'
