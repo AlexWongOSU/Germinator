@@ -5,4 +5,4 @@
 
 `Growth` takes the data output from Hyphatracker and the lookup table from `Lookup.maker` to assign the treatments to each ROI. Growth will also return a summarized version of the data to plot and use in models.
 
-`drc.predictions` uses the summarized data and the model created using the `drc` package to plot dose response curves using ggplot instead of base plot. 
+`drm.prediction` uses the `drm` model created using the `drc` package to create prediction tables for dose response curves using ggplot instead of base plot. 

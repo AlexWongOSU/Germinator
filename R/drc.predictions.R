@@ -6,7 +6,6 @@
 #'
 #'@export
 
-
 drm.prediction<- function(model, length = 100){
   #Extract model variables
   curvevars<- unique(model[["data"]][[4]])
@@ -21,27 +20,26 @@ drm.prediction<- function(model, length = 100){
   #Extract dimensions of the data frame.
   n.value <- dim(df)[1]
   n.column<- dim(df)[2]
-  #Storage matrix of predciton output
+  #Storage matrix of prediction output
   pred.matrix = NULL
   for(i in 1:n.value){
     i.current<- df[i,"values"]
-    #dataframe used in the `newdata` argument for `predict`
+    #data frame used in the `newdata` argument for `predict`
     newdataframe<- data.frame(dose = i.current,
                               name = curvevars)
     names(newdataframe)<- c("dose", curvename)
     i.pred<- predict(model, newdata = newdataframe,
                      interval = "confidence")
-    #rbind the output matrices togehter
+    #rbind the output matrices together
     pred.matrix<- rbind(pred.matrix, i.pred)
   }
-  #convert matrix into dataframe and add in variables
+  #convert matrix into data frame and add in variables
   pred.df<- as.data.frame(pred.matrix)
   pred.df$CurveID<- rep(curvevars, times = length)
   pred.df$Dose<- rep(doses, each = length(curvevars))
-  #reorder and sort dataframe
+  #reorder and sort data frame
   pred.df<- pred.df[, c("CurveID", "Dose", "Prediction", "Upper", "Lower")]
   names(pred.df)[names(pred.df)=="CurveID"]<- curvename
   pred.df<- pred.df[order(pred.df[,1]),]
   return(pred.df)
 }
-
