@@ -11,6 +11,7 @@ drm.prediction<- function(model, length = 100){
   curvevars<- unique(model[["data"]][[4]])
   curves<- length(curvevars)
   curvename<- model[["curveVarNam"]]
+  x.name<-as.character(model[["call"]][["formula"]][[3]])
   doses<- seq(min(model[["data"]][[1]]), max(model[["data"]][[1]]), length.out = length)
   #build storage data frame of the dose values to be accessed by predict
   df<- data.frame(values = doses)
@@ -40,6 +41,7 @@ drm.prediction<- function(model, length = 100){
   #reorder and sort data frame
   pred.df<- pred.df[, c("CurveID", "Dose", "Prediction", "Upper", "Lower")]
   names(pred.df)[names(pred.df)=="CurveID"]<- curvename
+  names(pred.df)[names(pred.df)== "Dose"]<- x.name
   pred.df<- pred.df[order(pred.df[,1]),]
   return(pred.df)
 }
