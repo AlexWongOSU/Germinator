@@ -2,7 +2,7 @@
 
 export(Growth)
 export(Lookuptable.maker)
-export(drm.prediction.fx)
+export(drm.prediction)
 import(dplyr)
 import(utils)
 importFrom(stats,na.omit)

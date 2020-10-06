@@ -1,40 +1,47 @@
 #' Creates a predictions table to create 95% confidence intervals
 #'   that can be used for plotting dose response curves in ggplot2.
 #'
-#'
 #'@param model object. drm model
-#'@param doses numerical sequence vector of the range of doses tested
-#'@param curvename  character. Name of the variable used to draw different curves
-#'@param curvevar character string of the variable curves are predicted for.
+#'@param length numeric. length of doses to form prediction table
 #'
 #'@export
 
 
-drm.prediction.fx<- function(model, doses, curvename, curvevar){
-  curves<- length(curvevar)
+drm.prediction<- function(model, length = 100){
+  #Extract model variables
+  curvevars<- unique(model[["data"]][[4]])
+  curves<- length(curvevars)
+  curvename<- model[["curveVarNam"]]
+  doses<- seq(min(model[["data"]][[1]]), max(model[["data"]][[1]]), length.out = length)
+  #build storage data frame of the dose values to be accessed by predict
   df<- data.frame(values = doses)
-  for (x in 1:(curves*3)) {
+  for (x in 1:(curves)){
     df[,x+1]<- NA
   }
+  #Extract dimensions of the data frame.
   n.value <- dim(df)[1]
   n.column<- dim(df)[2]
+  #Storage matrix of predciton output
+  pred.matrix = NULL
   for(i in 1:n.value){
     i.current<- df[i,"values"]
+    #dataframe used in the `newdata` argument for `predict`
     newdataframe<- data.frame(dose = i.current,
-                              name = curvevar)
+                              name = curvevars)
     names(newdataframe)<- c("dose", curvename)
-    i.pred<- predict(model,
-                     newdata = newdataframe,
+    i.pred<- predict(model, newdata = newdataframe,
                      interval = "confidence")
-    i.pred.vec<- as.vector(i.pred)
-    for (j in 1:n.column) {
-      df[i,j+1]<- i.pred.vec[j]
-    }
+    #rbind the output matrices togehter
+    pred.matrix<- rbind(pred.matrix, i.pred)
   }
-
-  df<- df[c(1:n.column)]
-  df.names<- expand.grid(curvevar, c("prediction", "pred.min", "pred.max"))
-  df.names$name<- paste(df.names$Var1, df.names$Var2, sep = ".")
-  names(df)<- c("Dose", df.names$name)
-  return(df)
+  #convert matrix into dataframe and add in variables
+  pred.df<- as.data.frame(pred.matrix)
+  pred.df$CurveID<- rep(curvevars, times = length)
+  pred.df$Dose<- rep(doses, each = length(curvevars))
+  #reorder and sort dataframe
+  pred.df<- pred.df[, c("CurveID", "Dose", "Prediction", "Upper", "Lower")]
+  names(pred.df)[names(pred.df)=="CurveID"]<- curvename
+  pred.df<- pred.df[order(pred.df[,1]),]
+  return(pred.df)
 }
+
