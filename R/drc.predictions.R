@@ -26,11 +26,11 @@ drm.prediction<- function(model, length = 100){
   for(i in 1:n.value){
     i.current<- df[i,"values"]
     #data frame used in the `newdata` argument for `predict`
-    newdataframe<- data.frame(dose = i.current,
+    newdataframe<- expand.grid(dose = i.current, #all interactions of variable and dose
                               name = curvevars)
-    names(newdataframe)<- c("dose", curvename)
-    i.pred<- predict(model, newdata = newdataframe,
-                     interval = "confidence")
+    names(newdataframe)<- c(x.name, curvename)
+    i.pred<- stats::predict(model, newdata = newdataframe,
+                            interval = "confidence")
     #rbind the output matrices together
     pred.matrix<- rbind(pred.matrix, i.pred)
   }
